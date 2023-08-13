@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import { qwikVite } from "@builder.io/qwik/optimizer";
-import { qwikSvelte } from "./src/vite";
 import sveltePreprocess from "svelte-preprocess";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 
