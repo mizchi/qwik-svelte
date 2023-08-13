@@ -1,4 +1,4 @@
-# qwik-svelte
+# @mizchi/qwik-svelte
 
 Qwikify svelte components on qwik.
 
@@ -12,7 +12,7 @@ $ npm install @mizchi/qwik-svelte @sveltejs/vite-plugin-svelte svelte svelte-pre
 
 ### vite.config.ts
 
-Setup with `@sveltejs/vite-plugin-svelte`'s `generate: 'ssr', hydratable: true` options.
+Setup ssr for svelte with `@sveltejs/vite-plugin-svelte`.
 
 ```ts
 import { defineConfig } from "vite";
@@ -36,6 +36,8 @@ export default defineConfig(() => {
   };
 });
 ```
+
+(To use `@sveltejs/vite-plugin-svelte`, you may need `"type": "module"` in `package.json`)
 
 ### Use svelte components
 
@@ -88,7 +90,7 @@ $ pnpm build # emit lib files
 
 ## TODO
 
-- [ ] unit test
+- [ ] unit testing
 - [ ] `<Slot>`
 - [ ] Check re-render with props change
 - [ ] Props types for svelte component
