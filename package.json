@@ -2,14 +2,14 @@
   "name": "@mizchi/qwik-svelte",
   "version": "0.1.1",
   "description": "Render svelte component on qwik",
-  "main": "./lib/index.mjs",
-  "qwik": "./lib/index.mjs",
+  "main": "./lib/index.qwik.mjs",
+  "qwik": "./lib/index.qwik.mjs",
   "types": "./lib-types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs",
-      "types": "./lib-types/index.d.ts"
+      "import": "./lib/index.qwik.mjs",
+      "require": "./lib/index.qwik.cjs",
+      "types": "./lib-types/index.qwik.d.ts"
     },
     "./vite": {
       "import": "./lib/vite.mjs",

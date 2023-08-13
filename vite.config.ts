@@ -8,7 +8,7 @@ export default defineConfig(() => {
     build: {
       target: "es2020",
       lib: {
-        entry: ['./src/index.ts', './src/vite.ts'],
+        entry: ['./src/index.qwik.ts', './src/vite.ts'],
         formats: ['es', 'cjs'],
         fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'mjs' : 'cjs'}`,
       },
