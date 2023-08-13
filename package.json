@@ -27,6 +27,7 @@
   "private": false,
   "type": "module",
   "scripts": {
+    "prepublishOnly": "pnpm build",
     "build": "qwik build",
     "build.lib": "vite build --mode lib",
     "build.types": "tsc --emitDeclarationOnly",
