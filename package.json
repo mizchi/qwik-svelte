@@ -19,7 +19,8 @@
   },
   "files": [
     "lib",
-    "lib-types"
+    "lib-types",
+    "src"
   ],
   "engines": {
     "node": ">=15.0.0"
@@ -27,7 +28,7 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "pnpm build && pnpm build.types",
     "build": "qwik build",
     "build.lib": "vite build --mode lib",
     "build.types": "tsc --emitDeclarationOnly",
