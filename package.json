@@ -1,5 +1,5 @@
 {
-  "name": "@mizchi/svelte-qwik",
+  "name": "@mizchi/qwik-svelte",
   "version": "0.1.0",
   "description": "Render svelte component on qwik",
   "main": "./lib/index.mjs",
