@@ -15,6 +15,7 @@ export default defineConfig(() => {
       rollupOptions: {
         external: [
           '@builder.io/qwik',
+          '@builder.io/qwik/build',
           'svelte',
           'svelte/compiler',
           'svelte/internal',
