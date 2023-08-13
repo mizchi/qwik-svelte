@@ -1,6 +1,6 @@
 {
   "name": "@mizchi/qwik-svelte",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Render svelte component on qwik",
   "main": "./lib/index.mjs",
   "qwik": "./lib/index.mjs",
