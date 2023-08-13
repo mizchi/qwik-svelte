@@ -20,7 +20,7 @@ import { qwikVite } from "@builder.io/qwik/optimizer";
 import sveltePreprocess from "svelte-preprocess";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 
-export default defineConfig(() => {
+export default defineConfig((options) => {
   return {
     plugins: [
       // with ssr config
