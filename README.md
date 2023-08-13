@@ -12,7 +12,7 @@ $ npm install @mizchi/qwik-svelte @sveltejs/vite-plugin-svelte svelte svelte-pre
 
 ### vite.config.ts
 
-Setup ssr for svelte with `@sveltejs/vite-plugin-svelte`.
+Setup svelte ssr with `@sveltejs/vite-plugin-svelte`.
 
 ```ts
 import { defineConfig } from "vite";
