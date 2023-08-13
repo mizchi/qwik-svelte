@@ -3,7 +3,7 @@
 Qwikify svelte components on qwik.
 
 ```bash
-$ npm install @mizchi/qwik-svelte svelte -D
+$ npm install @mizchi/qwik-svelte @sveltejs/vite-plugin-svelte svelte svelte-preprocess -D
 ```
 
 **CAUTION** - This is PoC phase. You should check it works on your app.
@@ -12,18 +12,24 @@ $ npm install @mizchi/qwik-svelte svelte -D
 
 ### vite.config.ts
 
+Setup with `@sveltejs/vite-plugin-svelte`'s `generate: 'ssr', hydratable: true` options.
+
 ```ts
 import { defineConfig } from "vite";
 import { qwikVite } from "@builder.io/qwik/optimizer";
-import { qwikSvelte } from "@mizchi/qwik-svelte/vite";
 import sveltePreprocess from "svelte-preprocess";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 
 export default defineConfig(() => {
   return {
     plugins: [
-      qwikSvelte({
+      // with ssr config
+      svelte({
         preprocess: sveltePreprocess(),
-        css: "injected"
+        compilerOptions: {
+          generate: options.mode === "ssr" ? "ssr" : "dom",
+          hydratable: true,
+        },
       }),
       qwikVite()
     ],
@@ -82,13 +88,10 @@ $ pnpm build # emit lib files
 
 ## TODO
 
-- [ ] Setup unit test runner
-- [ ] Support css chunks
+- [ ] unit test
 - [ ] `<Slot>`
 - [ ] Check re-render with props change
-- [ ] Svelte SourceMap
 - [ ] Props types for svelte component
-- [ ] Hot reloading (or just inherit vite-plugin-svelte's option)
 
 ## My motivation
 

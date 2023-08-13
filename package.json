@@ -10,11 +10,6 @@
       "import": "./lib/index.qwik.mjs",
       "require": "./lib/index.qwik.cjs",
       "types": "./lib-types/index.qwik.d.ts"
-    },
-    "./vite": {
-      "import": "./lib/vite.mjs",
-      "require": "./lib/vite.cjs",
-      "types": "./lib-types/vite.d.ts"
     }
   },
   "files": [
@@ -42,6 +37,7 @@
   },
   "devDependencies": {
     "@builder.io/qwik": "1.2.6",
+    "@sveltejs/vite-plugin-svelte": "^2.4.5",
     "@types/eslint": "8.40.2",
     "@types/node": "^20.4.0",
     "@typescript-eslint/eslint-plugin": "5.61.0",
@@ -56,5 +52,10 @@
     "undici": "5.22.1",
     "vite": "4.4.0",
     "vite-tsconfig-paths": "4.2.0"
+  },
+  "peerDependencies": {
+    "@builder.io/qwik": "*",
+    "@sveltejs/vite-plugin-svelte": "*",
+    "svelte": "*"
   }
 }
