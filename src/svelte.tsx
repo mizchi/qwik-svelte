@@ -17,7 +17,6 @@ import {
 
 import { isBrowser, isServer } from '@builder.io/qwik/build';
 import type { ComponentType, SvelteComponent } from 'svelte';
-// TODO: declare self
 import type { QwikifyProps } from "./types";
 
 interface QwikifyOptions {
@@ -38,7 +37,71 @@ type IsoSvelteCmp = (ComponentType<any>) | {
   }
 }
 
-const useWakeupSignal = (props: QwikifyProps<{}>, opts: QwikifyOptions = {}) => {
+// TODO: Slot not supported yet
+export function qwikifySvelteQrl<PROPS extends {}>(
+  isoCmp$: QRL<IsoSvelteCmp>,
+  opts?: QwikifyOptions
+) {
+  return component$((props: QwikifyProps<PROPS>) => {
+    const hostRef = useSignal<Element>();
+    const appState = useSignal<NoSerialize<SvelteComponent>>();
+    const [signal, isClientOnly] = useWakeupSignal(props, opts);
+    const TagName = opts?.tagName ?? ('qwik-svelte' as any);
+    useTask$(async ({ track }) => {
+      const trackedProps = track(() => ({ ...props }));
+      track(signal);
+      if (!isBrowser) return;
+      if (appState.value) {
+        appState.value.$set(toSvelteProps(trackedProps));
+        return;
+      }
+      if (hostRef.value) {
+        const Client: any = await isoCmp$.resolve();
+        appState.value = noSerialize(
+          new Client({
+            target: hostRef.value,
+            hydrate: true,
+            props: toSvelteProps(trackedProps),
+          })
+        );
+      }
+    });
+    if (isServer && !isClientOnly) {
+      const renderer = isoCmp$.resolve();
+      return <RenderOnce>
+        <TagName ref={hostRef}>
+          {renderer.then((renderer: any) => {
+            const markup = renderer.render(toSvelteProps(props));
+            const result = `<style>${markup.css?.code}</style>${markup.html}`;
+            return <SSRRaw data={result}/>;  
+          })}
+        </TagName>
+      </RenderOnce>;
+    }
+    return (
+      <RenderOnce>
+        <TagName
+          {...props}
+          ref={hostRef}
+        >
+          {SkipRender}
+        </TagName>
+      </RenderOnce>
+    );
+  });
+}
+
+const HOST_PREFIX = 'host:';
+const toSvelteProps = (props: Record<string, any>): Record<string, any> => {
+  return Object.entries(props).reduce((acc, [key, val]) => {
+    if (!key.startsWith('client:') && !key.startsWith(HOST_PREFIX)) {
+      return {...acc, [key.endsWith('$') ? key.slice(0, -1) : key]: val};
+    }
+    return acc;
+  }, {})
+};
+
+const useWakeupSignal = (props: QwikifyProps<any>, opts: QwikifyOptions = {}) => {
   const signal = useSignal(false);
   const activate = $(() => (signal.value = true));
   const clientOnly = !!(props['client:only'] || opts?.clientOnly);
@@ -64,61 +127,5 @@ const useWakeupSignal = (props: QwikifyProps<{}>, opts: QwikifyOptions = {}) => 
   }
   return [signal, clientOnly, activate] as const;
 };
-
-// TODO: Slot not supported yet
-export function qwikifySvelteQrl<PROPS extends {}>(
-  isoCmp$: QRL<IsoSvelteCmp>,
-  opts?: QwikifyOptions
-) {
-  return component$((props: QwikifyProps<PROPS>) => {
-    const hostRef = useSignal<Element>();
-    const appState = useSignal<NoSerialize<SvelteComponent>>();
-    const [signal, isClientOnly] = useWakeupSignal(props, opts);
-    const TagName = opts?.tagName ?? ('qwik-svelte' as any);
-    useTask$(async ({ track }) => {
-      const trackedProps = track(() => ({ ...props }));
-      track(signal);
-      if (!isBrowser) return;
-      if (appState.value) {
-        appState.value.$set(trackedProps);
-        return;
-      }
-      if (hostRef.value) {
-        const Client: any = await isoCmp$.resolve();
-        appState.value = noSerialize(
-          new Client({
-            target: hostRef.value,
-            hydrate: true,
-            props: trackedProps,
-          })
-        );
-      }
-    });
-    if (isServer && !isClientOnly) {
-      const renderer = isoCmp$.resolve();
-      return <RenderOnce>
-        <TagName ref={hostRef}>
-          {renderer.then((renderer: any) => {
-            const markup = renderer.render({...props});
-            const result = `<style>${markup.css?.code}</style>${markup.html}`;
-            return <SSRRaw data={result}/>;  
-          })}
-        </TagName>
-      </RenderOnce>;
-    }
-    return (
-      <RenderOnce>
-        <TagName
-          {...props}
-          ref={(el: Element) => {
-            hostRef.value = el;
-          }}
-        >
-          {SkipRender}
-        </TagName>
-      </RenderOnce>
-    );
-  });
-}
 
 export const qwikifySvelte$ = /*#__PURE__*/ implicit$FirstArg(qwikifySvelteQrl);

@@ -1,7 +1,20 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+
   export let name: string;
   export let counter: number = 0;
+  export let onUpdate: (current: number) => void;
   let count = 0;
+  let mounted = false;
+  onMount(() => {
+    mounted = true;
+  });
+  $: {
+    if (mounted) {
+      onUpdate?.(count);
+    }
+  }
+
 </script>
 
 <div class="app">
