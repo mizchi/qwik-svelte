@@ -47,7 +47,7 @@ export function qwikifySvelteQrl<PROPS extends {}>(
     const appState = useSignal<NoSerialize<SvelteComponent>>();
     const [signal, isClientOnly] = useWakeupSignal(props, opts);
     const TagName = opts?.tagName ?? ('qwik-svelte' as any);
-    useTask$(async ({ track }) => {
+    useTask$(async ({ track, cleanup }) => {
       const trackedProps = track(() => ({ ...props }));
       track(signal);
       if (!isBrowser) return;
@@ -65,6 +65,15 @@ export function qwikifySvelteQrl<PROPS extends {}>(
           })
         );
       }
+      cleanup(() => {
+        if (appState.value && !signal.value) {
+          // console.log("destroy!", signal.value);
+          appState.value.$destroy();
+          appState.value = undefined;
+          signal.value = false;
+          hostRef.value = undefined;
+        }
+      });
     });
     if (isServer && !isClientOnly) {
       const renderer = isoCmp$.resolve();
@@ -82,7 +91,17 @@ export function qwikifySvelteQrl<PROPS extends {}>(
       <RenderOnce>
         <TagName
           {...props}
-          ref={hostRef}
+          ref={(el: Element)=> {
+            if (isBrowser) {
+              queueMicrotask(() => {
+                // check re-monut
+                if (!hostRef.value) hostRef.value = el;
+                if (!signal.value) signal.value = true;
+              });
+            } else {
+              hostRef.value = el;
+            }
+          }}
         >
           {SkipRender}
         </TagName>
